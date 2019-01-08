@@ -1,6 +1,5 @@
 var superagent = require('superagent');
 var charset = require('superagent-charset');
-const mongoose = require('mongoose');
 charset(superagent);
 var baseUrl = 'https://www.qqtn.com/'; //输入任何网址都可以
 const cheerio = require('cheerio');
@@ -89,6 +88,6 @@ module.exports = {
             });
         });
         ctx.response.type = 'json';
-        ctx.response.body = { failed: false,reason: 'get pics success',data:items };
+        ctx.response.body = items;
     }
 };

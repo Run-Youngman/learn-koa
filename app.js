@@ -8,6 +8,8 @@ const templating = require('./templating');
 var cors = require('koa2-cors');
 
 const app = new Koa();
+const http = require('http').Server(app.callback())
+const io = require('socket.io')(http)
 const handler = async (ctx, next) => {
     try {
       await next()
@@ -22,27 +24,6 @@ const handler = async (ctx, next) => {
   }
 
 const isProduction = process.env.NODE_ENV === 'production';
-
-// log request URL:
-// app.use(async (ctx, next) => {
-//     console.log(`Process ${ctx.request.method} ${ctx.request.url}...`);
-//     var
-//         start = new Date().getTime(),
-//         execTime;
-//     await next();
-//     execTime = new Date().getTime() - start;
-//     ctx.response.set('X-Response-Time', `${execTime}ms`);
-// });
-
-// app.use(async (ctx, next) => {
-//     var str = "there is something.";
-//     if (str) {
-//         ctx.state.str = str;
-//         await next();
-//     } else {
-//         ctx.response.status = 403;
-//     }
-// });
 
 try{
     mongoose.connect('mongodb://localhost/test')
@@ -79,5 +60,14 @@ mongoose.connection
         console.log('some thing wrong', error)
         ctx.body = error.message;
     })
-app.listen(8080);
+    io.on('connection', (socket) => {
+        socket.on('chat message', (msg) => {
+            console.log('message: '+msg);
+            io.emit('chat message', msg);
+        });
+        socket.on('disconnect', () => {
+            console.log('user disconnected');
+        });
+    });
+http.listen(8080);
 console.log('app started at port 8080...');
