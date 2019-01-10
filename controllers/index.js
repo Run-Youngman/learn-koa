@@ -15,7 +15,7 @@ module.exports = {
         var
         username = ctx.request.body.username || '',
         password = ctx.request.body.password || '';
-        var rst = await ctx.models.User.find({userName: username, pass: password});
+        var rst = await ctx.models.Employee.find({name: username, password: password});
         if (rst.length > 0) {
             ctx.response.type = 'json';
             ctx.response.body = { failed: false,reason: 'username matched the password'};

@@ -7,11 +7,13 @@ const cheerio = require('cheerio');
 module.exports = {
     'POST /createEmployee': async (ctx, next) => {
         var name = ctx.request.body.name || '';
+        var password = ctx.request.body.password || '';
         var age = ctx.request.body.age || '';
         var salary = ctx.request.body.salary || '';
         var phone = ctx.request.body.phone || '';
         var employee = new ctx.models.Employee({
             name:name,
+            password:password,
             age:age,
             salary:salary,
             phone:phone,

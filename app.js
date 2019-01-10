@@ -8,6 +8,7 @@ const templating = require('./templating');
 var cors = require('koa2-cors');
 
 const app = new Koa();
+const socket = require('./socket')
 const http = require('http').Server(app.callback())
 const io = require('socket.io')(http)
 const handler = async (ctx, next) => {
@@ -60,14 +61,7 @@ mongoose.connection
         console.log('some thing wrong', error)
         ctx.body = error.message;
     })
-    io.on('connection', (socket) => {
-        socket.on('chat message', (msg) => {
-            console.log('message: '+msg);
-            io.emit('chat message', msg);
-        });
-        socket.on('disconnect', () => {
-            console.log('user disconnected');
-        });
-    });
-http.listen(8080);
-console.log('app started at port 8080...');
+    socket(io)
+http.listen(8080, function() {
+    console.log('app started at port 8080...');
+});
